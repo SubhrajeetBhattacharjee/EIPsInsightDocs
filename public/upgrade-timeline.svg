@@ -1,0 +1,111 @@
+<svg width="1600" height="780" viewBox="0 0 1600 780" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Ethereum Network Upgrade Timeline</title>
+  <desc id="desc">A horizontal timeline of major Ethereum upgrades from Frontier through Glamsterdam with labeled milestones and phases.</desc>
+  <rect width="1600" height="780" rx="28" fill="#F8FAFC"/>
+  <text x="40" y="78" fill="#111827" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800">Ethereum Network Upgrade Timeline</text>
+  <text x="40" y="112" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500">Major protocol milestones and the phases that shaped Ethereum's upgrade path</text>
+
+  <line x1="72" y1="360" x2="1528" y2="360" stroke="#1F2937" stroke-width="12" stroke-linecap="round"/>
+
+  <rect x="46" y="342" width="92" height="36" rx="8" fill="#67E8F9" stroke="#0F172A" stroke-width="2"/>
+  <text x="92" y="366" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Frontier</text>
+
+  <g stroke="#0F172A" stroke-width="3" stroke-dasharray="8 8">
+    <line x1="210" y1="360" x2="210" y2="452"/>
+    <line x1="298" y1="360" x2="298" y2="452"/>
+    <line x1="388" y1="360" x2="388" y2="452"/>
+    <line x1="496" y1="360" x2="496" y2="452"/>
+    <line x1="590" y1="360" x2="590" y2="452"/>
+    <line x1="706" y1="360" x2="706" y2="452"/>
+    <line x1="820" y1="360" x2="820" y2="452"/>
+    <line x1="944" y1="360" x2="944" y2="452"/>
+    <line x1="1054" y1="360" x2="1054" y2="452"/>
+    <line x1="1168" y1="360" x2="1168" y2="452"/>
+    <line x1="1284" y1="360" x2="1284" y2="452"/>
+    <line x1="1406" y1="360" x2="1406" y2="452"/>
+  </g>
+
+  <g>
+    <circle cx="210" cy="360" r="11" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <rect x="150" y="468" width="120" height="34" rx="7" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <text x="210" y="490" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Homestead</text>
+  </g>
+
+  <g>
+    <circle cx="298" cy="360" r="11" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <rect x="250" y="468" width="96" height="34" rx="7" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <text x="298" y="490" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">DAO Fork</text>
+  </g>
+
+  <g>
+    <circle cx="388" cy="360" r="11" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <rect x="318" y="468" width="140" height="34" rx="7" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <text x="388" y="490" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Tangerine Whistle</text>
+  </g>
+
+  <g>
+    <circle cx="496" cy="360" r="11" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <rect x="440" y="468" width="112" height="34" rx="7" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <text x="496" y="490" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Byzantium</text>
+  </g>
+
+  <g>
+    <circle cx="590" cy="360" r="11" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <rect x="532" y="468" width="116" height="34" rx="7" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <text x="590" y="490" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Constantinople</text>
+  </g>
+
+  <g>
+    <circle cx="706" cy="360" r="11" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <rect x="654" y="468" width="104" height="34" rx="7" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <text x="706" y="490" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Istanbul</text>
+  </g>
+
+  <g>
+    <circle cx="820" cy="360" r="11" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <rect x="768" y="468" width="104" height="34" rx="7" fill="#BAE6FD" stroke="#0F172A" stroke-width="2"/>
+    <text x="820" y="490" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Berlin</text>
+  </g>
+
+  <g>
+    <circle cx="944" cy="360" r="11" fill="#FEF08A" stroke="#0F172A" stroke-width="2"/>
+    <rect x="892" y="232" width="104" height="34" rx="7" fill="#FEF08A" stroke="#0F172A" stroke-width="2"/>
+    <text x="944" y="254" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">London</text>
+  </g>
+
+  <g>
+    <circle cx="1054" cy="360" r="11" fill="#BBF7D0" stroke="#0F172A" stroke-width="2"/>
+    <rect x="1010" y="170" width="88" height="32" rx="7" fill="#BBF7D0" stroke="#0F172A" stroke-width="2"/>
+    <text x="1054" y="190" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Paris</text>
+  </g>
+
+  <g>
+    <circle cx="1168" cy="360" r="11" fill="#DDD6FE" stroke="#0F172A" stroke-width="2"/>
+    <rect x="1114" y="110" width="108" height="34" rx="7" fill="#DDD6FE" stroke="#0F172A" stroke-width="2"/>
+    <text x="1168" y="132" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Altair</text>
+  </g>
+
+  <g>
+    <circle cx="1284" cy="360" r="11" fill="#FDE68A" stroke="#0F172A" stroke-width="2"/>
+    <rect x="1230" y="82" width="108" height="34" rx="7" fill="#FDE68A" stroke="#0F172A" stroke-width="2"/>
+    <text x="1284" y="104" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Bellatrix</text>
+  </g>
+
+  <g>
+    <circle cx="1406" cy="360" r="11" fill="#A7F3D0" stroke="#0F172A" stroke-width="2"/>
+    <rect x="1350" y="54" width="112" height="34" rx="7" fill="#A7F3D0" stroke="#0F172A" stroke-width="2"/>
+    <text x="1406" y="76" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Glamsterdam</text>
+  </g>
+
+  <rect x="820" y="300" width="160" height="34" rx="7" fill="#DCFCE7" stroke="#0F172A" stroke-width="2"/>
+  <text x="900" y="322" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Merge / Post-merge era</text>
+
+  <rect x="40" y="710" width="18" height="18" fill="#67E8F9" stroke="#0F172A" stroke-width="2"/>
+  <text x="66" y="724" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Execution layer</text>
+
+  <rect x="210" y="710" width="18" height="18" fill="#BBF7D0" stroke="#0F172A" stroke-width="2"/>
+  <text x="236" y="724" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Consensus layer</text>
+
+  <rect x="396" y="710" width="18" height="18" fill="#FDE68A" stroke="#0F172A" stroke-width="2"/>
+  <text x="422" y="724" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Post-merge Ethereum mainnet</text>
+</svg>
