@@ -608,8 +608,8 @@ export default function Home() {
 
         /* MAIN CONTENT */
         .main-container {
-          margin-left: 260px;
-          width: calc(100vw - 260px);
+          margin-left: 284px;
+          width: calc(100vw - 284px);
           padding: 80px 10px;
         }
 
@@ -1531,7 +1531,8 @@ export default function Home() {
       {/* LOADER */}
       <div className={`loader ${!isLoaderVisible ? 'hidden' : ''}`}>
         <div className="loader-logo">
-          EIPInsight
+          <span>docs.EIPs</span>
+          <span className="loader-logo-accent">Insight</span>
         </div>
         <div className="loader-bar">
           <div className="loader-bar-fill"></div>
