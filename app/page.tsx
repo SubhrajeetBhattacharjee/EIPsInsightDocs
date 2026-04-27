@@ -1554,7 +1554,7 @@ export default function Home() {
     style={{ width: '28px', height: '28px', borderRadius: '4px', objectFit: 'cover' }} 
   />
   <span>
-    <span style={{ color: 'var(--text)' }}>EIPs</span>
+    <span style={{ color: 'var(--text)' }}>docs.EIPs</span>
     <span style={{ color: 'var(--accent)' }}>Insight</span>
   </span>
 </div>
