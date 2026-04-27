@@ -608,8 +608,8 @@ export default function Home() {
 
         /* MAIN CONTENT */
         .main-container {
-          margin-left: 284px;
-          width: calc(100vw - 284px);
+          margin-left: 304px;
+          width: calc(100vw - 304px);
           padding: 80px 10px;
         }
 
