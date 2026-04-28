@@ -17,8 +17,8 @@ const _libreBaskerville = Libre_Baskerville({
 });
 
 export const metadata: Metadata = {
-  title: 'docs.EIPsInsight',
-  description: 'docs.EIPsInsight',
+  title: 'EIPInsight Documentation',
+  description: 'Track Ethereum Improvement Proposals with live status, governance signals, lifecycle data, and historical context.',
   icons: {
     icon: '/eipFavicon.png',
     shortcut: '/eipFavicon.png',
@@ -26,25 +26,25 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL('https://docs.eipsinsight.com'),
   openGraph: {
-    title: 'docs.EIPsInsight',
-    description: 'docs.EIPsInsight',
+    title: 'EIPInsight Documentation',
+    description: 'Track Ethereum Improvement Proposals with live status, governance signals, lifecycle data, and historical context.',
     url: 'https://docs.eipsinsight.com',
-    siteName: 'docs.EIPsInsight',
+    siteName: 'EIPInsight',
     images: [
       {
-        url: '/eipsinsighthomepage_label.png',
-        width: 1600,
-        height: 900,
-        alt: 'EIPsInsight dashboard preview',
+        url: '/docseipsinsighthero.png',
+        width: 865,
+        height: 463,
+        alt: 'EIPInsight documentation hero preview',
       },
     ],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'docs.EIPsInsight',
-    description: 'docs.EIPsInsight',
-    images: ['/eipsinsighthomepage_label.png'],
+    title: 'EIPInsight Documentation',
+    description: 'Track Ethereum Improvement Proposals with live status, governance signals, lifecycle data, and historical context.',
+    images: ['/docseipsinsighthero.png'],
   },
 }
 
