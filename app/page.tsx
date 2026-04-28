@@ -1,12 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 
 export default function Home() {
   const [isLoaderVisible, setIsLoaderVisible] = useState(true);
   const [isDark, setIsDark] = useState(true);
+  const [showSupportBanner, setShowSupportBanner] = useState(true);
+  const [activeSectionId, setActiveSectionId] = useState('about');
+  const [activeItemId, setActiveItemId] = useState('about-overview');
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     about: true,
     standards: true,
@@ -27,6 +30,113 @@ export default function Home() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark-mode', isDark);
   }, [isDark]);
+
+  useEffect(() => {
+    const sectionIdLookup = new Map(navSections.map((section) => [section.sectionId, section.id]));
+    const itemIdLookup = new Map(
+      navSections.flatMap((section) => section.items.map((item) => [item.sectionId, section.id] as const)),
+    );
+
+    const sectionVisibility = new Map<string, number>();
+    const itemVisibility = new Map<string, number>();
+
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const sectionKey = sectionIdLookup.get(entry.target.id);
+          if (!sectionKey) {
+            return;
+          }
+
+          sectionVisibility.set(sectionKey, entry.isIntersecting ? entry.intersectionRatio : 0);
+        });
+
+        const visibleSections = navSections
+          .map((section) => ({ id: section.id, ratio: sectionVisibility.get(section.id) ?? 0 }))
+          .filter((section) => section.ratio > 0);
+
+        if (!visibleSections.length) {
+          return;
+        }
+
+        const nextActiveSection = visibleSections.reduce((best, current) => (
+          current.ratio > best.ratio ? current : best
+        )).id;
+
+        setActiveSectionId((prev) => (prev === nextActiveSection ? prev : nextActiveSection));
+      },
+      {
+        threshold: [0.2, 0.35, 0.5, 0.7],
+        rootMargin: '-20% 0px -55% 0px',
+      },
+    );
+
+    const itemObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const itemKey = itemIdLookup.get(entry.target.id);
+          if (!itemKey) {
+            return;
+          }
+
+          itemVisibility.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0);
+        });
+
+        const visibleItems = Array.from(itemVisibility.entries()).filter(([, ratio]) => ratio > 0);
+        if (!visibleItems.length) {
+          return;
+        }
+
+        const [nextActiveItem] = visibleItems.reduce((best, current) => (
+          current[1] > best[1] ? current : best
+        ));
+
+        const ownerSection = itemIdLookup.get(nextActiveItem);
+        if (!ownerSection) {
+          return;
+        }
+
+        setActiveItemId((prev) => (prev === nextActiveItem ? prev : nextActiveItem));
+        setActiveSectionId((prev) => (prev === ownerSection ? prev : ownerSection));
+      },
+      {
+        threshold: [0.15, 0.3, 0.5, 0.7],
+        rootMargin: '-18% 0px -60% 0px',
+      },
+    );
+
+    navSections.forEach((section) => {
+      const sectionElement = document.getElementById(section.sectionId);
+      if (sectionElement) {
+        sectionObserver.observe(sectionElement);
+      }
+
+      section.items.forEach((item) => {
+        const itemElement = document.getElementById(item.sectionId);
+        if (itemElement) {
+          itemObserver.observe(itemElement);
+        }
+      });
+    });
+
+    return () => {
+      sectionObserver.disconnect();
+      itemObserver.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    setExpandedSections((prev) => {
+      if (prev[activeSectionId]) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        [activeSectionId]: true,
+      };
+    });
+  }, [activeSectionId]);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => ({
@@ -406,7 +516,7 @@ export default function Home() {
         /* NAVBAR */
         .navbar {
           position: fixed;
-          top: 0;
+          top: var(--support-banner-height, 0px);
           left: 0;
           right: 0;
           height: 60px;
@@ -503,9 +613,9 @@ export default function Home() {
         .sidebar {
           position: fixed;
           left: 0;
-          top: 60px;
+          top: calc(60px + var(--support-banner-height, 0px));
           width: 260px;
-          height: calc(100vh - 60px);
+          height: calc(100vh - 60px - var(--support-banner-height, 0px));
           background-color: var(--bg);
           border-right: 1px solid var(--border);
           padding: 24px 0;
@@ -548,8 +658,8 @@ export default function Home() {
           margin: 0 12px;
           padding: 9px 12px;
           border-radius: 10px;
-          border: 1px solid rgba(63, 185, 80, 0.45);
-          background: linear-gradient(180deg, rgba(31, 120, 91, 0.28) 0%, rgba(13, 17, 23, 0.4) 100%);
+          border: 1px solid #1a2a1a;
+          background: transparent;
           cursor: pointer;
           display: flex;
           justify-content: space-between;
@@ -558,8 +668,17 @@ export default function Home() {
           user-select: none;
         }
 
+        .sidebar-section-title.active {
+          border: 1px solid rgba(63, 185, 80, 0.45);
+          background: linear-gradient(180deg, rgba(31, 120, 91, 0.28) 0%, rgba(13, 17, 23, 0.4) 100%);
+        }
+
         .sidebar-section-title:hover {
-          border-color: var(--accent);
+          border-color: #263b26;
+        }
+
+        .sidebar-section-title.active:hover {
+          border-color: rgba(63, 185, 80, 0.45);
         }
 
         .sidebar-chevron {
@@ -602,7 +721,7 @@ export default function Home() {
 
         .sidebar-item.active {
           border-left-color: var(--accent);
-          color: var(--accent);
+          color: #ffffff;
           background-color: var(--green-glow);
         }
 
@@ -610,7 +729,7 @@ export default function Home() {
         .main-container {
           margin-left: 304px;
           width: calc(100vw - 304px);
-          padding: 80px 10px;
+          padding: calc(80px + var(--support-banner-height, 0px)) 28px 80px;
         }
 
         .main-inner {
@@ -622,10 +741,64 @@ export default function Home() {
         @media (max-width: 768px) {
           .main-container {
             margin-left: 0;
-            padding: 80px 10px;
+            padding: calc(80px + var(--support-banner-height, 0px)) 16px 80px;
             width: 100%;
           }
           .sidebar { display: none; }
+        }
+
+        .support-banner {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 0 44px 0 16px;
+          border-bottom: 1px solid var(--border);
+          background: var(--bg);
+          color: var(--text);
+          font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+          font-size: 13px;
+          font-weight: 600;
+          text-align: center;
+          flex-wrap: wrap;
+          z-index: 140;
+          box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02);
+        }
+
+        html:not(.dark-mode) .support-banner {
+          background: rgba(240, 247, 242, 0.96);
+        }
+
+        .support-banner-link {
+          color: var(--accent);
+          text-decoration: underline;
+          text-underline-offset: 3px;
+        }
+
+        .support-banner-close {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 24px;
+          height: 24px;
+          border: none;
+          border-radius: 999px;
+          background: transparent;
+          color: var(--text2);
+          cursor: pointer;
+          font-size: 18px;
+          line-height: 1;
+        }
+
+        .support-banner-close:hover {
+          color: var(--text);
+          background: rgba(255, 255, 255, 0.04);
         }
 
         .hero {
@@ -836,19 +1009,24 @@ export default function Home() {
 
         .content-section {
           margin-bottom: 80px;
-          scroll-margin-top: 84px;
+          scroll-margin-top: calc(84px + var(--support-banner-height, 0px));
         }
 
-        .content-section h2 {
+        .content-section > h2,
+        .content-section > h3 {
+          font-family: var(--font-libre-baskerville), 'Libre Baskerville', serif;
+        }
+
+        .content-section > h2 {
           margin-bottom: 24px;
           color: var(--text);
         }
 
-        .content-section h3 {
+        .content-section > h3 {
           margin-top: 32px;
           margin-bottom: 16px;
           color: var(--text);
-          scroll-margin-top: 84px;
+          scroll-margin-top: calc(84px + var(--support-banner-height, 0px));
         }
 
         .content-section p {
@@ -1008,8 +1186,8 @@ export default function Home() {
 
         .insights-playbook {
           display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 14px;
+          grid-template-columns: 1fr;
+          gap: 18px;
           margin-top: 18px;
         }
 
@@ -1017,9 +1195,9 @@ export default function Home() {
           background-color: var(--bg2);
           border: 1px solid var(--border);
           border-radius: 14px;
-          padding: 18px;
+          padding: 20px;
           display: grid;
-          gap: 10px;
+          gap: 12px;
         }
 
         .insights-card-kicker {
@@ -1059,6 +1237,45 @@ export default function Home() {
           text-transform: uppercase;
           letter-spacing: 0.03em;
           color: var(--text2);
+
+        .insights-label-toggle {
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          background: var(--bg2);
+          overflow: hidden;
+        }
+
+        .insights-label-toggle summary {
+          list-style: none;
+          cursor: pointer;
+          padding: 10px 12px;
+          color: var(--text2);
+          font-family: var(--font-libre-baskerville), 'Libre Baskerville', serif;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .insights-label-toggle summary::-webkit-details-marker {
+          display: none;
+        }
+
+        .insights-label-toggle summary::after {
+          content: 'Hide label';
+          float: right;
+          color: var(--accent);
+        }
+
+        .insights-label-toggle:not([open]) summary::after {
+          content: 'Show label';
+        }
+
+        .insights-label-toggle img {
+          display: block;
+          width: 100%;
+        }
         }
 
         .insights-list {
@@ -1080,9 +1297,6 @@ export default function Home() {
             grid-template-columns: repeat(2, minmax(0, 1fr));
           }
 
-          .insights-playbook {
-            grid-template-columns: 1fr;
-          }
         }
 
         @media (max-width: 700px) {
@@ -1531,8 +1745,8 @@ export default function Home() {
       {/* LOADER */}
       <div className={`loader ${!isLoaderVisible ? 'hidden' : ''}`}>
         <div className="loader-logo">
-          <span>docs.EIPs</span>
-          <span className="loader-logo-accent">Insight</span>
+          <span className="loader-logo-accent">docs</span>
+          <span>.EIPsInsight</span>
         </div>
         <div className="loader-bar">
           <div className="loader-bar-fill"></div>
@@ -1545,7 +1759,30 @@ export default function Home() {
       </div>
 
       {/* PAGE CONTENT */}
-      <div style={{ opacity: isLoaderVisible ? 0 : 1, transition: 'opacity 0.5s ease' }}>
+      <div
+        style={{
+          opacity: isLoaderVisible ? 0 : 1,
+          transition: 'opacity 0.5s ease',
+          ['--support-banner-height' as any]: showSupportBanner ? '36px' : '0px',
+        } as CSSProperties}
+      >
+        {showSupportBanner ? (
+          <div className="support-banner" role="status" aria-label="Support EIPsInsight on Giveth">
+            <span>Public goods infrastructure for Ethereum governance. Support us on</span>
+            <a href="https://giveth.io/project/eipsinsight" target="_blank" rel="noreferrer" className="support-banner-link">
+              Giveth QF
+            </a>
+            <span>💜</span>
+            <button
+              type="button"
+              className="support-banner-close"
+              aria-label="Dismiss support banner"
+              onClick={() => setShowSupportBanner(false)}
+            >
+              ×
+            </button>
+          </div>
+        ) : null}
         {/* NAVBAR */}
         <nav className="navbar" id="navbar">
          <div className="navbar-left">
@@ -1555,8 +1792,8 @@ export default function Home() {
     style={{ width: '28px', height: '28px', borderRadius: '4px', objectFit: 'cover' }} 
   />
   <span>
-    <span style={{ color: 'var(--text)' }}>docs.EIPs</span>
-    <span style={{ color: 'var(--accent)' }}>Insight</span>
+    <span style={{ color: 'var(--accent)' }}>docs</span>
+    <span style={{ color: 'var(--text)' }}>.EIPsInsight</span>
   </span>
 </div>
           <div className="navbar-center">
@@ -1586,9 +1823,8 @@ export default function Home() {
                 <div className="sidebar-group-label">{section.group}</div>
               ) : null}
               <div
-                className="sidebar-section-title"
+                className={`sidebar-section-title ${activeSectionId === section.id ? 'active' : ''}`}
                 onClick={() => {
-                  scrollToSection(section.sectionId);
                   toggleSection(section.id);
                 }}
               >
@@ -1599,8 +1835,12 @@ export default function Home() {
                 {section.items.map((item, idx) => (
                   <button
                     key={idx}
-                    className="sidebar-item"
-                    onClick={() => scrollToSection(item.sectionId)}
+                    className={`sidebar-item ${activeItemId === item.sectionId ? 'active' : ''}`}
+                    onClick={() => {
+                      setActiveSectionId(section.id);
+                      setActiveItemId(item.sectionId);
+                      scrollToSection(item.sectionId);
+                    }}
                     type="button"
                   >
                     {item.label}
@@ -1700,7 +1940,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="content-section" id="about-us">
+          <section className="content-section" id="about-us" aria-labelledby="about-overview" data-section="about" itemScope itemType="https://schema.org/WebPageElement">
             <div className="about-intro" id="about-overview">
               <div className="section-label">About</div>
               <h2 className="about-title">EIPInsight turns Ethereum standards activity into something people can actually navigate.</h2>
@@ -1769,7 +2009,7 @@ export default function Home() {
           </section>
 
           {/* STANDARDS */}
-          <section className="content-section" id="standards">
+          <section className="content-section" id="standards" aria-labelledby="standards-overview" data-section="standards" itemScope itemType="https://schema.org/WebPageElement">
             <h2 id="standards-overview">Standards & Proposals</h2>
 
             <h3 id="eips-explained">EIPs Explained</h3>
@@ -1797,6 +2037,22 @@ export default function Home() {
               RIPs provide a standardized way to propose and discuss improvements to rollup solutions and scaling solutions built on Ethereum.
             </p>
 
+            <img
+              src="/eipsinsighthomepage_label.png"
+              alt="EIPsInsight homepage label"
+              style={{
+                width: '100%',
+                maxWidth: '1120px',
+                display: 'block',
+                margin: '18px auto 24px',
+                padding: '8px',
+                border: '1px solid var(--border)',
+                borderRadius: '12px',
+                background: 'var(--bg2)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.16)',
+              }}
+            />
+
             <h3 id="proposal-lifecycle">Proposal Lifecycle</h3>
             <div className="card-list">
               <div className="card">
@@ -1819,7 +2075,7 @@ export default function Home() {
           </section>
 
           {/* EXPLORE */}
-          <section className="content-section" id="explore">
+          <section className="content-section" id="explore" aria-labelledby="explore-hub" data-section="explore" itemScope itemType="https://schema.org/WebPageElement">
             <h2 id="explore-hub">Explore</h2>
             <p>
               Explore views turn the standards feed into focused lenses, helping you spot spikes, stalls, ownership patterns, and category shifts without digging through raw lists.
@@ -1865,8 +2121,8 @@ export default function Home() {
           </section>
 
           {/* UPGRADES */}
-          <section className="content-section" id="upgrades">
-            <h2>Upgrade Watch</h2>
+          <section className="content-section" id="upgrades" aria-labelledby="upgrades-overview" data-section="upgrades" itemScope itemType="https://schema.org/WebPageElement">
+            <h2 id="upgrades-overview">Upgrade Watch</h2>
             <p>
               Follow how Ethereum upgrades move from proposals into coordinated network change. This section ties together EIP inclusion, client readiness, and the major milestones that shape each upgrade cycle.
             </p>
@@ -1982,8 +2238,23 @@ export default function Home() {
           </section>
 
           {/* ANALYTICS */}
-          <section className="content-section" id="analytics">
-            <h2>Analytics</h2>
+          <section className="content-section" id="analytics" aria-labelledby="analytics-overview" data-section="analytics" itemScope itemType="https://schema.org/WebPageElement">
+            <img
+              src="/glamsterdam_label.png"
+              alt="Glamsterdam label"
+              style={{
+                width: '100%',
+                maxWidth: '1120px',
+                display: 'block',
+                margin: '18px auto 24px',
+                padding: '8px',
+                border: '1px solid var(--border)',
+                borderRadius: '12px',
+                background: 'var(--bg2)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.16)',
+              }}
+            />
+            <h2 id="analytics-overview">Analytics</h2>
             <p>
               Analytics is designed for decision making, not just reporting. Use the guides below to understand what each view is for, which controls matter most, and how to read the visuals correctly.
             </p>
@@ -2107,7 +2378,7 @@ export default function Home() {
           </section>
 
           {/* INSIGHTS */}
-          <section className="content-section" id="insights">
+          <section className="content-section" id="insights" aria-labelledby="insights-overview" data-section="insights" itemScope itemType="https://schema.org/WebPageElement">
             <h2 id="insights-overview">Insights</h2>
             <p>
               Insights helps you move from metrics to interpretation. Each module below explains how to use the view, what controls matter, and how to read outcomes without misinterpreting short-term noise.
@@ -2115,6 +2386,10 @@ export default function Home() {
 
             <div className="insights-playbook">
               <article className="insights-card" id="insights-year-month">
+                <details className="insights-label-toggle" open>
+                  <summary>Monthly Insight Label</summary>
+                  <img src="/monthly-insight_label.png" alt="Monthly insight label" />
+                </details>
                 <div className="insights-card-kicker">Year-Month Analysis</div>
                 <h3>Track how governance changes month to month.</h3>
                 <p>Use this when you want trend direction: whether proposal flow is accelerating, slowing down, or rotating between EIP, ERC, and RIP tracks.</p>
@@ -2139,6 +2414,10 @@ export default function Home() {
               </article>
 
               <article className="insights-card" id="insights-governance-process">
+                <details className="insights-label-toggle" open>
+                  <summary>Governance Label</summary>
+                  <img src="/Governance_label.png" alt="Governance label" />
+                </details>
                 <div className="insights-card-kicker">Governance & Process</div>
                 <h3>Measure process speed and friction.</h3>
                 <p>This view is your operational health report: it shows decision speed, process stage conversion, and where waiting states are accumulating.</p>
@@ -2163,6 +2442,10 @@ export default function Home() {
               </article>
 
               <article className="insights-card" id="insights-editorial-commentary">
+                <details className="insights-label-toggle" open>
+                  <summary>Editorial Commentary Label</summary>
+                  <img src="/editorial_commentory_label.png" alt="Editorial commentary label" />
+                </details>
                 <div className="insights-card-kicker">Editorial Commentary</div>
                 <h3>Generate lifecycle intelligence for a proposal.</h3>
                 <p>Use this module for a deep read on one proposal. It converts raw status history and PR context into an editor-style narrative of momentum and risk.</p>
@@ -2189,7 +2472,7 @@ export default function Home() {
           </section>
 
           {/* TOOLS */}
-          <section className="content-section" id="tools">
+          <section className="content-section" id="tools" aria-labelledby="tools-overview" data-section="tools" itemScope itemType="https://schema.org/WebPageElement">
             <h2 id="tools-overview">Tools</h2>
             <p>
               Productivity tools support day-to-day standards operations, from drafting proposals to tracking dependencies and upgrade windows.
@@ -2201,8 +2484,8 @@ export default function Home() {
           </section>
 
           {/* API */}
-          <section className="content-section" id="api">
-            <h2>Developer API</h2>
+          <section className="content-section" id="api" aria-labelledby="api-overview" data-section="api" itemScope itemType="https://schema.org/WebPageElement">
+            <h2 id="api-overview">Developer API</h2>
 
             <h3 id="api-overview">Overview</h3>
             <p>
@@ -2243,8 +2526,8 @@ console.log(data.title);`}
           </section>
 
           {/* FAQ */}
-          <section className="content-section" id="faq">
-            <h2>FAQ</h2>
+          <section className="content-section" id="faq" aria-labelledby="faq-overview" data-section="faq" itemScope itemType="https://schema.org/WebPageElement">
+            <h2 id="faq-overview">FAQ</h2>
 
             <p className="faq-intro">
               Quick answers about standards, governance workflow, and how the platform works.

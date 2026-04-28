@@ -20,9 +20,9 @@ export const metadata: Metadata = {
   title: 'docs.EIPsInsight',
   description: 'docs.EIPsInsight',
   icons: {
-    icon: '/EIPsInsights.gif',
-    shortcut: '/EIPsInsights.gif',
-    apple: '/EIPsInsights.gif',
+    icon: '/eipFavicon.png',
+    shortcut: '/eipFavicon.png',
+    apple: '/eipFavicon.png',
   },
 }
 
